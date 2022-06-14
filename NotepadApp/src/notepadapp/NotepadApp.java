@@ -129,8 +129,26 @@ public class NotepadApp extends JFrame implements ActionListener
         {
             if(fileName==null)
 		{
-			
-		}
+			FileDialog fd = new FileDialog(notepad,"Save As",FileDialog.SAVE);
+                        fd.setVisible(true);
+
+                        if(fd.getFile()!=null)
+                        {
+                                fileName = fd.getFile();
+                                fileAddress = fd.getDirectory();
+                        }
+
+                        try
+                        { 
+                                BufferedWriter br = new BufferedWriter(new FileWriter(fileAddress+fileName));
+                                br.write(notepad.textarea.getText());
+                                br.close();
+                        }
+                        catch(Exception ie)
+                        {
+                            System.out.println(ie);
+                        }
+                }
 		else
 		{
 			try
@@ -143,7 +161,7 @@ public class NotepadApp extends JFrame implements ActionListener
 			}
 			catch(IOException ie)
 			{
-				
+                            System.out.println(ie);
 			}
 		}
         }
