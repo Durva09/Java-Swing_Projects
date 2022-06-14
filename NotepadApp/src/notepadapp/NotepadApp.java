@@ -134,17 +134,20 @@ public class NotepadApp extends JFrame implements ActionListener
         }
         else if(e.getSource()==openFile)
         {
-            FileDialog fd = new FileDialog(notepad,"Open",FileDialog.LOAD);
+                FileDialog fd = new FileDialog(notepad,"Open",FileDialog.LOAD);
 		fd.setVisible(true);
 		if(fd.getFile()!=null)
 		{
-			fileName=fd.getFile();
-			fileAddress=fd.getDirectory();
-			notepad.setTitle(fileName);
+                    fileName=fd.getFile();
+                    fileAddress=fd.getDirectory();
+                    notepad.setTitle(fileName);
 		}
 		else
 		{
-			
+                    notepad.textarea.setText("");
+                    notepad.setTitle("New");
+                    fileName=null;
+                    fileAddress=null;
 		}
 		
 		try
