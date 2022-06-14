@@ -3,9 +3,16 @@ import java.awt.FileDialog;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import javax.swing.KeyStroke;
+import java.awt.print.PrinterException;
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.scene.text.Text;
 import javax.swing.*;
 
@@ -22,6 +29,7 @@ public class NotepadApp extends JFrame implements ActionListener
     JMenu help=new JMenu("Help");
     
     JMenuItem newFile=new JMenuItem("New");
+    JMenuItem newWindow=new JMenuItem("New Window");
     JMenuItem openFile=new JMenuItem("Open");
     JMenuItem saveFile=new JMenuItem("Save");
     JMenuItem saveAsFile=new JMenuItem("Save As");
@@ -51,6 +59,7 @@ public class NotepadApp extends JFrame implements ActionListener
         mbar.add(help);
         
         file.add(newFile);
+        file.add(newWindow);
         file.add(openFile);
         file.add(saveAsFile);
         file.add(saveFile);
@@ -65,6 +74,7 @@ public class NotepadApp extends JFrame implements ActionListener
         help.add(about);
         
         newFile.addActionListener(this);
+        newWindow.addActionListener(this);
         openFile.addActionListener(this);
         saveAsFile.addActionListener(this);
         saveFile.addActionListener(this);
@@ -82,26 +92,81 @@ public class NotepadApp extends JFrame implements ActionListener
         add(scrollpane);
         scrollpane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollpane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollpane.setBorder(BorderFactory.createEmptyBorder());
         
         textarea.setFont(new Font(Font.SANS_SERIF,Font.PLAIN,22));
         textarea.setLineWrap(true);
+        
+        newFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N,KeyEvent.CTRL_DOWN_MASK));
+        openFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O,KeyEvent.CTRL_DOWN_MASK));
+        saveFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,KeyEvent.CTRL_DOWN_MASK));
+        print.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P,KeyEvent.CTRL_DOWN_MASK));
+        exit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q,KeyEvent.CTRL_DOWN_MASK));
+        
+        cut.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X,KeyEvent.CTRL_DOWN_MASK));
+        copy.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C,KeyEvent.CTRL_DOWN_MASK));
+        paste.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V,KeyEvent.CTRL_DOWN_MASK));
+        selectall.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A,KeyEvent.CTRL_DOWN_MASK));
+        
+        about.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_I,KeyEvent.CTRL_DOWN_MASK));
     }
     
-    public static void main(String args[])
+    public static void main(String args[]) throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException
     {
+        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         notepad=new NotepadApp();
         notepad.setVisible(true);
         
     }
 
     public void actionPerformed(ActionEvent e) {
-        if(e.getSource()=="newFile")
+        if(e.getSource()==newFile)
         {
-            
+            notepad.textarea.setText("");
+            notepad.setTitle("New");
+            fileName=null;
+            fileAddress=null;
         }
-        else if(e.getSource()=="openFile")
+        else if(e.getSource()==newWindow)
         {
-            
+            NotepadApp notepad1=new NotepadApp();
+            notepad1.setVisible(true);
+        }
+        else if(e.getSource()==openFile)
+        {
+            FileDialog fd = new FileDialog(notepad,"Open",FileDialog.LOAD);
+		fd.setVisible(true);
+		if(fd.getFile()!=null)
+		{
+			fileName=fd.getFile();
+			fileAddress=fd.getDirectory();
+			notepad.setTitle(fileName);
+		}
+		else
+		{
+			
+		}
+		
+		try
+		{
+			FileReader fr = new FileReader(fileAddress+fileName);
+			BufferedReader br = new BufferedReader(fr);
+			
+			notepad.textarea.setText("");
+			String line = null;
+			
+			while((line=br.readLine())!=null)
+			{
+                            notepad.textarea.append(line+"\n");
+			}
+			br.close();
+			fr.close();
+		}
+		catch(Exception ie)
+		{
+			//System.out.println("File Not Opened");
+			JOptionPane.showMessageDialog(notepad,"File Not Found","Open",JOptionPane.WARNING_MESSAGE );
+		}
         }
         else if(e.getSource()==saveAsFile)
         {
@@ -113,16 +178,17 @@ public class NotepadApp extends JFrame implements ActionListener
                     fileName = fd.getFile();
                     fileAddress = fd.getDirectory();
             }
-
+            
             try
             { 
                     BufferedWriter br = new BufferedWriter(new FileWriter(fileAddress+fileName));
                     br.write(notepad.textarea.getText());
                     br.close();
+                    notepad.setTitle(fileName);
             }
             catch(Exception ie)
             {
-
+                System.out.println(ie);
             }
         }
         else if(e.getSource()==saveFile)
@@ -143,6 +209,7 @@ public class NotepadApp extends JFrame implements ActionListener
                                 BufferedWriter br = new BufferedWriter(new FileWriter(fileAddress+fileName));
                                 br.write(notepad.textarea.getText());
                                 br.close();
+                                notepad.setTitle(fileName);
                         }
                         catch(Exception ie)
                         {
@@ -165,33 +232,38 @@ public class NotepadApp extends JFrame implements ActionListener
 			}
 		}
         }
-        else if(e.getSource()=="print")
+        else if(e.getSource()==print)
         {
-            
+            try {
+                textarea.print();
+            } catch (PrinterException ex) {
+                Logger.getLogger(NotepadApp.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         else if(e.getSource()==exit)
         {
             System.exit(0);
         }
-        else if(e.getSource()=="cut")
+        else if(e.getSource()==cut)
         {
-            
+            textarea.cut();
         }
-        else if(e.getSource()=="copy")
+        else if(e.getSource()==copy)
         {
-            
+            textarea.copy();
         }
-        else if(e.getSource()=="paste")
+        else if(e.getSource()==paste)
         {
-            
+            textarea.paste();
         }
-        else if(e.getSource()=="selectall")
+        else if(e.getSource()==selectall)
         {
-            
+            textarea.selectAll();
         }
-        else if(e.getSource()=="about")
+        else if(e.getSource()==about)
         {
-            
+            About about=new About();
+            about.setVisible(true);
         }
     }
 }
