@@ -319,7 +319,6 @@ public class NotepadApp extends JFrame implements ActionListener
         {
             if(wordWrap==false)
             { 
-                System.out.println("heyo");
                 wordWrap=true;
                 wrap.setText("Word Wrap : ON");
                 notepad.textarea.setLineWrap(true);
@@ -327,12 +326,24 @@ public class NotepadApp extends JFrame implements ActionListener
             }
             else if(wordWrap==true)
             {
-                System.out.println("hello");
                 wordWrap=false;
                 wrap.setText("Word Wrap : OFF");
                 notepad.textarea.setLineWrap(false);
                 notepad.textarea.setWrapStyleWord(false);
             }
         }
+        else if(e.getSource()==arial)
+        {
+            textarea.setFont(new Font("Arial",Font.PLAIN,(textarea.getFont().getSize())));
+        }
+        else if(e.getSource()==comic)
+        {
+            textarea.setFont(new Font("Comic Sans MS",Font.PLAIN,(textarea.getFont().getSize())));
+        }
+        else if(e.getSource()==times)
+        {
+            textarea.setFont(new Font("Times New Roman",Font.PLAIN,(textarea.getFont().getSize())));
+        }
+        
     }
 }
