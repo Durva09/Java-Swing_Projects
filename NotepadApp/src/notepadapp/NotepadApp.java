@@ -344,6 +344,29 @@ public class NotepadApp extends JFrame implements ActionListener
         {
             textarea.setFont(new Font("Times New Roman",Font.PLAIN,(textarea.getFont().getSize())));
         }
-        
+        else if(e.getSource()==size8)
+        {
+            textarea.setFont(new Font((textarea.getFont().getName()),Font.PLAIN,8));
+        }
+        else if(e.getSource()==size12)
+        {
+            textarea.setFont(new Font((textarea.getFont().getName()),Font.PLAIN,12));
+        }
+        else if(e.getSource()==size16)
+        {
+            textarea.setFont(new Font((textarea.getFont().getName()),Font.PLAIN,16));
+        }
+        else if(e.getSource()==size18)
+        {
+            textarea.setFont(new Font((textarea.getFont().getName()),Font.PLAIN,18));
+        }
+        else if(e.getSource()==size20)
+        {
+            textarea.setFont(new Font((textarea.getFont().getName()),Font.PLAIN,20));
+        }
+        else if(e.getSource()==size24)
+        {
+            textarea.setFont(new Font((textarea.getFont().getName()),Font.PLAIN,24));
+        }
     }
 }
