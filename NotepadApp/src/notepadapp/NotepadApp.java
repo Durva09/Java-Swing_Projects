@@ -22,11 +22,13 @@ public class NotepadApp extends JFrame implements ActionListener
     Text t;
     String fileName=null,fileAddress=null;
     JFileChooser chooser;
+    boolean wordWrap=false;
     
     JMenuBar mbar=new JMenuBar();
     JMenu file=new JMenu("File");
     JMenu edit=new JMenu("Edit");
     JMenu help=new JMenu("Help");
+    JMenu format=new JMenu("Format");
     
     JMenuItem newFile=new JMenuItem("New");
     JMenuItem newWindow=new JMenuItem("New Window");
@@ -42,6 +44,21 @@ public class NotepadApp extends JFrame implements ActionListener
     JMenuItem selectall=new JMenuItem("Select All");
     
     JMenuItem about=new JMenuItem("About");
+    
+    JMenuItem wrap=new JMenuItem("Word Wrap: OFF");
+    JMenu size=new JMenu("Font Size");
+    JMenuItem size8=new JMenuItem("8");
+    JMenuItem size12=new JMenuItem("12");
+    JMenuItem size16=new JMenuItem("16");
+    JMenuItem size18=new JMenuItem("18");
+    JMenuItem size20=new JMenuItem("20");
+    JMenuItem size24=new JMenuItem("24");
+    
+    JMenu style=new JMenu("Font Style");
+    JMenuItem arial=new JMenuItem("Arial");
+    JMenuItem comic=new JMenuItem("Comic Sans MS");
+    JMenuItem times=new JMenuItem("Times New Roman");
+    
     JTextArea textarea=new JTextArea();
     
     NotepadApp()
@@ -56,6 +73,7 @@ public class NotepadApp extends JFrame implements ActionListener
         setJMenuBar(mbar);
         mbar.add(file);
         mbar.add(edit);
+        mbar.add(format);
         mbar.add(help);
         
         file.add(newFile);
@@ -71,7 +89,22 @@ public class NotepadApp extends JFrame implements ActionListener
         edit.add(paste);
         edit.add(selectall);
         
+        format.add(wrap);
+        format.add(size);
+        format.add(style);
+        
         help.add(about);
+        
+        size.add(size8);
+        size.add(size12);
+        size.add(size16);
+        size.add(size18);
+        size.add(size20);
+        size.add(size24);
+        
+        style.add(arial);
+        style.add(comic);
+        style.add(times);
         
         newFile.addActionListener(this);
         newWindow.addActionListener(this);
@@ -86,6 +119,21 @@ public class NotepadApp extends JFrame implements ActionListener
         paste.addActionListener(this);
         selectall.addActionListener(this);
         
+        wrap.addActionListener(this);
+        
+        size.addActionListener(this);
+        size8.addActionListener(this);
+        size12.addActionListener(this);
+        size16.addActionListener(this);
+        size18.addActionListener(this);
+        size20.addActionListener(this);
+        size24.addActionListener(this);
+        
+        style.addActionListener(this);
+        arial.addActionListener(this);
+        comic.addActionListener(this);
+        times.addActionListener(this);
+        
         about.addActionListener(this);
         
         JScrollPane scrollpane=new JScrollPane(textarea);
@@ -95,7 +143,6 @@ public class NotepadApp extends JFrame implements ActionListener
         scrollpane.setBorder(BorderFactory.createEmptyBorder());
         
         textarea.setFont(new Font(Font.SANS_SERIF,Font.PLAIN,22));
-        textarea.setLineWrap(true);
         
         newFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N,KeyEvent.CTRL_DOWN_MASK));
         openFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O,KeyEvent.CTRL_DOWN_MASK));
@@ -267,6 +314,25 @@ public class NotepadApp extends JFrame implements ActionListener
         {
             About about=new About();
             about.setVisible(true);
+        }
+        else if(e.getSource()==wrap)
+        {
+            if(wordWrap==false)
+            { 
+                System.out.println("heyo");
+                wordWrap=true;
+                wrap.setText("Word Wrap : ON");
+                notepad.textarea.setLineWrap(true);
+                notepad.textarea.setWrapStyleWord(true);
+            }
+            else if(wordWrap==true)
+            {
+                System.out.println("hello");
+                wordWrap=false;
+                wrap.setText("Word Wrap : OFF");
+                notepad.textarea.setLineWrap(false);
+                notepad.textarea.setWrapStyleWord(false);
+            }
         }
     }
 }
